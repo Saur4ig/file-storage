@@ -1,5 +1,5 @@
 services:
-  app:
+  storage:
     build: .
     ports:
       - "8080:8080"
@@ -13,7 +13,7 @@ services:
       - db
 
   db:
-    image: postgres:13
+    image: postgres:16
     ports:
       - "5432:5432"
     environment:
@@ -21,7 +21,7 @@ services:
       POSTGRES_PASSWORD: adminpass
       POSTGRES_DB: filestore
     volumes:
-      - pgdata:/var/lib/postgresql/data
+      - ./pgdata:/var/lib/postgresql/data
 
 volumes:
   pgdata:

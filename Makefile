@@ -1,4 +1,14 @@
-.PHONY: run
+.PHONY: run, build, up, down
+
+build:
+	docker build -t storage .
+
+up:
+	docker-compose up -d storage
+
+down:
+	docker-compose rm -sf storage
 
 run:
-	go run app/main.go
+	make build
+	make up
