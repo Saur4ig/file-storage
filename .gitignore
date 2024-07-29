@@ -30,3 +30,6 @@ go.work
 # Misc
 .DS_Store
 *.pem
+
+# Volumes
+pgdata
