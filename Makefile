@@ -1,4 +1,4 @@
-.PHONY: run, build, up, down
+.PHONY: run, build, up, down, re
 
 build:
 	docker build -t storage .
@@ -12,3 +12,7 @@ down:
 run:
 	make build
 	make up
+
+re:
+	make down
+	make run

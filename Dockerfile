@@ -4,14 +4,13 @@ WORKDIR /app
 COPY go.mod go.sum ./
 RUN go mod download
 COPY . .
+RUN go build -o /file_storage ./app/main.go
 
-RUN go build -o main ./app/main.go
 
 FROM alpine:latest
 
 RUN apk --no-cache add ca-certificates
 WORKDIR /root/
-COPY --from=builder /app/main .
-EXPOSE 8080
+COPY --from=builder /file_storage ./file_storage
 
-CMD ["./main"]
+ENTRYPOINT ["/root/file_storage"]
