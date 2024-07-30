@@ -4,6 +4,7 @@ import (
 	"log"
 
 	"github.com/saur4ig/file-storage/internal/config"
+	"github.com/saur4ig/file-storage/internal/rest"
 )
 
 func main() {
@@ -12,6 +13,7 @@ func main() {
 	if err != nil {
 		log.Fatalf("could not load config: %v", err)
 	}
-
 	log.Println(conf)
+
+	rest.CreateServer()
 }
