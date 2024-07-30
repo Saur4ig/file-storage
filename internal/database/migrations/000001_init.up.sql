@@ -19,20 +19,6 @@ CREATE TABLE folders (
     FOREIGN KEY (parent_folder_id) REFERENCES folders(id) ON DELETE CASCADE
 );
 
--- Create files table
-CREATE TABLE files (
-    id BIGSERIAL PRIMARY KEY,
-    folder_id BIGINT NOT NULL REFERENCES folders(id) ON DELETE CASCADE,
-    user_id INT NOT NULL REFERENCES users(id) ON DELETE CASCADE,
-    name VARCHAR(255) NOT NULL,
-    s3_url TEXT NOT NULL,
-    size BIGINT NOT NULL,
-    transaction_id BIGINT REFERENCES upload_transactions(id) ON DELETE SET NULL,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    UNIQUE(folder_id, name),
-    INDEX(user_id)
-);
-
 -- Create upload_transactions table
 CREATE TABLE upload_transactions (
     id BIGSERIAL PRIMARY KEY,
@@ -43,6 +29,20 @@ CREATE TABLE upload_transactions (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
+
+-- Create files table
+CREATE TABLE files (
+    id BIGSERIAL PRIMARY KEY,
+    folder_id BIGINT NOT NULL REFERENCES folders(id) ON DELETE CASCADE,
+    user_id INT NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+    name VARCHAR(255) NOT NULL,
+    s3_url TEXT NOT NULL,
+    size BIGINT NOT NULL,
+    transaction_id BIGINT REFERENCES upload_transactions(id) ON DELETE SET NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    UNIQUE(folder_id, name)
+);
+
 
 -- Indexes for efficient querying
 CREATE INDEX idx_user_email ON users(email);
