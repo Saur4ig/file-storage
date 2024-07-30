@@ -1,0 +1,435 @@
+{
+	"info": {
+		"_postman_id": "6a86bbd9-678b-432e-a9d1-18289390fc9c",
+		"name": "file storage",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "2009000"
+	},
+	"item": [
+		{
+			"name": "ping",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "localhost:8080/v1/ping",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"v1",
+						"ping"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "get folder info",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "user_id",
+						"value": "1",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "formdata",
+					"formdata": []
+				},
+				"url": {
+					"raw": "localhost:8080/v1/folders/{folder_id}?limit=10",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"v1",
+						"folders",
+						"{folder_id}"
+					],
+					"query": [
+						{
+							"key": "limit",
+							"value": "10"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "upload single file",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "user_id",
+						"value": "1",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "file",
+							"type": "file",
+							"src": "/Users/saur4ig/example.png"
+						}
+					]
+				},
+				"url": {
+					"raw": "localhost:8080/v1/folders/{folder_id}/files",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"v1",
+						"folders",
+						"{folder_id}",
+						"files"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "transaction start",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "user_id",
+						"value": "1",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "localhost:8080/v1/folders/{folder_id}/transaction/start",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"v1",
+						"folders",
+						"{folder_id}",
+						"transaction",
+						"start"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "transaction stop",
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "user_id",
+						"value": "1",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "localhost:8080/v1/folders/{folder_id}/transaction/stop",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"v1",
+						"folders",
+						"{folder_id}",
+						"transaction",
+						"stop"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "upload multiple files",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "user_id",
+						"value": "1",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "",
+							"type": "file",
+							"src": "/Users/saur4ig/example.png"
+						}
+					]
+				},
+				"url": {
+					"raw": "localhost:8080/v1/folders/{folder_id}/files/batch/{transaction_id}",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"v1",
+						"folders",
+						"{folder_id}",
+						"files",
+						"batch",
+						"{transaction_id}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "move single file",
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "user_id",
+						"value": "1",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"new_folder_id\": 2\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:8080/v1/folders/{folder_id}/files/{id}/move",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"v1",
+						"folders",
+						"{folder_id}",
+						"files",
+						"{id}",
+						"move"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "move multiple files",
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "user_id",
+						"value": "1",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"file_ids\": [1, 2, 3],\n    \"new_folder_id\": 2\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:8080/v1/folders/{folder_id}/files/move",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"v1",
+						"folders",
+						"{folder_id}",
+						"files",
+						"move"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "remove multiple files",
+			"request": {
+				"method": "DELETE",
+				"header": [
+					{
+						"key": "user_id",
+						"value": "1",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"file_ids\": [\n        1,\n        2,\n        3\n    ]\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:8080/v1/folders/{folder_id}/files",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"v1",
+						"folders",
+						"{folder_id}",
+						"files"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "remove single file",
+			"request": {
+				"method": "DELETE",
+				"header": [
+					{
+						"key": "user_id",
+						"value": "1",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "localhost:8080/v1/folders/{folder_id}/files/{id}",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"v1",
+						"folders",
+						"{folder_id}",
+						"files",
+						"{id}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "create folder",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "user_id",
+						"value": "1",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"name\": \"app\",\n  \"parent_folder_id\": 1\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:8080/v1/folders",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"v1",
+						"folders"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "move folder",
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "user_id",
+						"value": "1",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:8080/v1/folders/{id}/move",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"v1",
+						"folders",
+						"{id}",
+						"move"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "remove folder",
+			"request": {
+				"method": "DELETE",
+				"header": [
+					{
+						"key": "user_id",
+						"value": "1",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "localhost:8080/v1/folders/{id}",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"v1",
+						"folders",
+						"{id}"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
