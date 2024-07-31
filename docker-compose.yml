@@ -10,6 +10,7 @@ services:
       - DB_PASSWORD=adminpass
       - DB_NAME=filestore
       - REDIS_HOST=redis
+      - REDIS_PORT=6379
     depends_on:
       - db
       - redis
