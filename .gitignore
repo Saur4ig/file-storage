@@ -33,3 +33,4 @@ go.work
 
 # Volumes
 pgdata
+redisdаta
