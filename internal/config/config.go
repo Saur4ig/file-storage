@@ -12,6 +12,7 @@ const (
 	DB_USER     = "DB_USER"
 	DB_PASSWORD = "DB_PASSWORD"
 	DB_NAME     = "DB_NAME"
+	REDIS_HOST  = "REDIS_HOST"
 )
 
 type DbConfig struct {
@@ -22,8 +23,13 @@ type DbConfig struct {
 	Name     string
 }
 
+type CacheConfig struct {
+	Host string
+}
+
 type Config struct {
-	DB DbConfig
+	DB    DbConfig
+	Cache CacheConfig
 }
 
 func LoadConfig() (*Config, error) {
@@ -40,30 +46,19 @@ func LoadConfig() (*Config, error) {
 			Password: os.Getenv(DB_PASSWORD),
 			Name:     os.Getenv(DB_NAME),
 		},
+		Cache: CacheConfig{
+			Host: os.Getenv(REDIS_HOST),
+		},
 	}, nil
 }
 
 // if at least one env params missing - error
 func checkAllEnvVariables() error {
-	if _, ok := os.LookupEnv(DB_HOST); !ok {
-		return fmt.Errorf("%s is missing", DB_HOST)
+	required := []string{DB_HOST, DB_PORT, DB_USER, DB_PASSWORD, DB_NAME, REDIS_HOST}
+	for _, str := range required {
+		if _, ok := os.LookupEnv(str); !ok {
+			return fmt.Errorf("%s is missing", str)
+		}
 	}
-
-	if _, ok := os.LookupEnv(DB_PORT); !ok {
-		return fmt.Errorf("%s is missing", DB_PORT)
-	}
-
-	if _, ok := os.LookupEnv(DB_USER); !ok {
-		return fmt.Errorf("%s is missing", DB_USER)
-	}
-
-	if _, ok := os.LookupEnv(DB_PASSWORD); !ok {
-		return fmt.Errorf("%s is missing", DB_PASSWORD)
-	}
-
-	if _, ok := os.LookupEnv(DB_NAME); !ok {
-		return fmt.Errorf("%s is missing", DB_NAME)
-	}
-
 	return nil
 }

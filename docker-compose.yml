@@ -9,6 +9,7 @@ services:
       - DB_USER=admin
       - DB_PASSWORD=adminpass
       - DB_NAME=filestore
+      - REDIS_HOST=redis
     depends_on:
       - db
       - redis
