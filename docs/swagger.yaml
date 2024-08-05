@@ -1,0 +1,455 @@
+basePath: /v1
+definitions:
+  api.ErrorResponse:
+    type: object
+  api.MoveFileRequest:
+    properties:
+      new_folder_id:
+        type: integer
+    type: object
+  api.MoveFolderRequest:
+    properties:
+      new_folder_id:
+        type: integer
+    type: object
+  api.NewFolderResponse:
+    properties:
+      folder_id:
+        type: integer
+    type: object
+  api.RequestData:
+    properties:
+      name:
+        type: string
+      parent_folder_id:
+        type: integer
+    type: object
+  api.Size:
+    properties:
+      name:
+        type: string
+      size:
+        type: string
+    type: object
+  api.TransactionStartResponse:
+    properties:
+      transaction_id:
+        type: integer
+    type: object
+externalDocs:
+  description: OpenAPI
+  url: https://swagger.io/resources/open-api/
+host: localhost:8080
+info:
+  contact: {}
+  title: File storage app
+  version: "0.1"
+paths:
+  /ping:
+    get:
+      description: Returns a simple "pong" response to verify the service is running.
+      produces:
+      - text/plain
+      responses:
+        "200":
+          description: pong
+          schema:
+            type: string
+      summary: Health check
+      tags:
+      - health
+  /v1/folders:
+    post:
+      description: Creates a new folder with the given name and parent folder ID for
+        the authenticated user.
+      parameters:
+      - description: User ID
+        in: header
+        name: user_id
+        required: true
+        type: integer
+      - description: Folder creation request payload
+        in: body
+        name: requestData
+        required: true
+        schema:
+          $ref: '#/definitions/api.RequestData'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Folder successfully created
+          schema:
+            $ref: '#/definitions/api.NewFolderResponse'
+        "400":
+          description: Invalid request data or folder creation failed
+          schema:
+            $ref: '#/definitions/api.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/api.ErrorResponse'
+      summary: Create a new folder
+      tags:
+      - folder
+  /v1/folders/{folder_id}:
+    delete:
+      description: Deletes a specified folder and updates size calculations for all
+        related folders
+      parameters:
+      - description: User ID
+        in: header
+        name: user_id
+        required: true
+        type: integer
+      - description: Folder ID
+        in: path
+        name: folder_id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "204":
+          description: Folder successfully removed
+        "400":
+          description: Invalid folder_id
+          schema:
+            $ref: '#/definitions/api.ErrorResponse'
+        "500":
+          description: Failed to remove folder
+          schema:
+            $ref: '#/definitions/api.ErrorResponse'
+      summary: Remove a folder
+      tags:
+      - folder
+    get:
+      description: Retrieves size details of the folder specified by folder ID, similar
+        to the 'du' command, but in JSON format
+      parameters:
+      - description: User ID
+        in: header
+        name: user_id
+        required: true
+        type: integer
+      - description: Folder ID
+        in: path
+        name: folder_id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Folder size information retrieved successfully
+          schema:
+            items:
+              $ref: '#/definitions/api.Size'
+            type: array
+        "400":
+          description: Invalid folder_id
+          schema:
+            $ref: '#/definitions/api.ErrorResponse'
+        "500":
+          description: Failed to get folder information
+          schema:
+            $ref: '#/definitions/api.ErrorResponse'
+      summary: Get folder information
+      tags:
+      - folder
+  /v1/folders/{folder_id}/files:
+    post:
+      consumes:
+      - multipart/form-data
+      description: Uploads a file to S3 storage and saves the file details in the
+        database. It also updates the folder size cache in there is no transaction
+      parameters:
+      - description: User ID
+        in: header
+        name: user_id
+        required: true
+        type: integer
+      - description: Folder ID
+        in: path
+        name: folder_id
+        required: true
+        type: integer
+      - description: File to upload
+        in: formData
+        name: file
+        required: true
+        type: file
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: File successfully uploaded
+        "400":
+          description: Invalid input parameters or file upload failed
+          schema:
+            $ref: '#/definitions/api.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/api.ErrorResponse'
+      summary: Upload a file
+      tags:
+      - file
+  /v1/folders/{folder_id}/files/{file_id}:
+    delete:
+      description: Deletes a file from the specified folder by file ID.
+      parameters:
+      - description: Folder ID
+        in: path
+        name: folder_id
+        required: true
+        type: integer
+      - description: File ID
+        in: path
+        name: file_id
+        required: true
+        type: integer
+      - description: User ID
+        in: header
+        name: user_id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "204":
+          description: No Content
+        "400":
+          description: Invalid folder_id or file_id
+          schema:
+            $ref: '#/definitions/api.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/api.ErrorResponse'
+      summary: Remove a file
+      tags:
+      - file
+    get:
+      parameters:
+      - description: Folder ID
+        in: path
+        name: folder_id
+        required: true
+        type: integer
+      - description: File ID
+        in: path
+        name: file_id
+        required: true
+        type: integer
+      - description: User ID
+        in: header
+        name: user_id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "204":
+          description: No Content
+        "400":
+          description: Invalid file_id
+          schema:
+            $ref: '#/definitions/api.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/api.ErrorResponse'
+      summary: Get a file
+      tags:
+      - file
+  /v1/folders/{folder_id}/files/{file_id}/move:
+    put:
+      description: Moves a specified file to a new folder based on provided folder
+        ID.
+      parameters:
+      - description: Folder ID
+        in: path
+        name: folder_id
+        required: true
+        type: integer
+      - description: File ID
+        in: path
+        name: file_id
+        required: true
+        type: integer
+      - description: User ID
+        in: header
+        name: user_id
+        required: true
+        type: integer
+      - description: Request payload containing the new folder ID
+        in: body
+        name: moveFile
+        required: true
+        schema:
+          $ref: '#/definitions/api.MoveFileRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: File successfully moved
+        "400":
+          description: Invalid input parameters
+          schema:
+            $ref: '#/definitions/api.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/api.ErrorResponse'
+      summary: Move a file
+      tags:
+      - file
+  /v1/folders/{folder_id}/move:
+    put:
+      description: Changes the parent folder of a specified folder and updates the
+        size calculations
+      parameters:
+      - description: User ID
+        in: header
+        name: user_id
+        required: true
+        type: integer
+      - description: Folder ID
+        in: path
+        name: folder_id
+        required: true
+        type: integer
+      - description: New parent folder ID
+        in: body
+        name: moveFolder
+        required: true
+        schema:
+          $ref: '#/definitions/api.MoveFolderRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Folder successfully moved
+        "400":
+          description: Invalid folder_id or request body
+          schema:
+            $ref: '#/definitions/api.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/api.ErrorResponse'
+      summary: Move a folder
+      tags:
+      - folder
+  /v1/folders/{folder_id}/transaction/{transaction_id}/complete:
+    put:
+      description: Completes the specified transaction by updating its status to "completed"
+        and updating folder sizes
+      parameters:
+      - description: User ID
+        in: header
+        name: user_id
+        required: true
+        type: integer
+      - description: Folder ID
+        in: path
+        name: folder_id
+        required: true
+        type: integer
+      - description: Transaction ID
+        in: path
+        name: transaction_id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Transaction successfully completed
+        "400":
+          description: Invalid transaction_id
+          schema:
+            $ref: '#/definitions/api.ErrorResponse'
+        "404":
+          description: Transaction not found
+          schema:
+            $ref: '#/definitions/api.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/api.ErrorResponse'
+      summary: Complete a transaction
+      tags:
+      - transaction
+  /v1/folders/{folder_id}/transaction/{transaction_id}/stop:
+    put:
+      description: Stops the specified transaction by updating its status to "failed"
+      parameters:
+      - description: User ID
+        in: header
+        name: user_id
+        required: true
+        type: integer
+      - description: Folder ID
+        in: path
+        name: folder_id
+        required: true
+        type: integer
+      - description: Transaction ID
+        in: path
+        name: transaction_id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Transaction successfully stopped
+        "400":
+          description: Invalid transaction_id
+          schema:
+            $ref: '#/definitions/api.ErrorResponse'
+        "500":
+          description: Failed to stop transaction
+          schema:
+            $ref: '#/definitions/api.ErrorResponse'
+      summary: Stop a transaction
+      tags:
+      - transaction
+  /v1/folders/{folder_id}/transaction/start:
+    post:
+      description: Initiates a new transaction for the specified folder
+      parameters:
+      - description: User ID
+        in: header
+        name: user_id
+        required: true
+        type: integer
+      - description: Folder ID
+        in: path
+        name: folder_id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Transaction successfully started
+          schema:
+            $ref: '#/definitions/api.TransactionStartResponse'
+        "400":
+          description: Invalid folder_id
+          schema:
+            $ref: '#/definitions/api.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/api.ErrorResponse'
+      summary: Start a new transaction
+      tags:
+      - transaction
+securityDefinitions:
+  BasicAuth:
+    type: basic
+swagger: "2.0"

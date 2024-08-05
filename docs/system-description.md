@@ -14,7 +14,7 @@
    - Manages file upload, pause, resume, and cancel operations.
 
 4. **PostgreSQL database**
-   - Shards data by user ID(if the client rly big) or region to balance the load.
+   - Data sharding or region to balance the load.
    - Uses partitioned tables for better performance.
    - Tables:
       - `Users table`: Stores user info.

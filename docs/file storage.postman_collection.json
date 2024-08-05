@@ -44,7 +44,7 @@
 					"formdata": []
 				},
 				"url": {
-					"raw": "localhost:8080/v1/folders/{folder_id}?limit=10",
+					"raw": "localhost:8080/v1/folders/{{folder id}}",
 					"host": [
 						"localhost"
 					],
@@ -52,13 +52,7 @@
 					"path": [
 						"v1",
 						"folders",
-						"{folder_id}"
-					],
-					"query": [
-						{
-							"key": "limit",
-							"value": "10"
-						}
+						"{{folder id}}"
 					]
 				}
 			},
@@ -73,6 +67,11 @@
 						"key": "user_id",
 						"value": "1",
 						"type": "text"
+					},
+					{
+						"key": "transaction_id",
+						"value": "1",
+						"type": "text"
 					}
 				],
 				"body": {
@@ -81,12 +80,12 @@
 						{
 							"key": "file",
 							"type": "file",
-							"src": "/Users/saur4ig/example.png"
+							"src": "/Users/saur4ig/Downloads/sugar-shutterstock_615908132.jpg"
 						}
 					]
 				},
 				"url": {
-					"raw": "localhost:8080/v1/folders/{folder_id}/files",
+					"raw": "localhost:8080/v1/folders/5/files",
 					"host": [
 						"localhost"
 					],
@@ -94,7 +93,7 @@
 					"path": [
 						"v1",
 						"folders",
-						"{folder_id}",
+						"5",
 						"files"
 					]
 				}
@@ -113,7 +112,7 @@
 					}
 				],
 				"url": {
-					"raw": "localhost:8080/v1/folders/{folder_id}/transaction/start",
+					"raw": "localhost:8080/v1/folders/5/transaction/start",
 					"host": [
 						"localhost"
 					],
@@ -121,7 +120,7 @@
 					"path": [
 						"v1",
 						"folders",
-						"{folder_id}",
+						"5",
 						"transaction",
 						"start"
 					]
@@ -141,7 +140,7 @@
 					}
 				],
 				"url": {
-					"raw": "localhost:8080/v1/folders/{folder_id}/transaction/stop",
+					"raw": "localhost:8080/v1/folders/{folder_id}/transaction/{id}stop",
 					"host": [
 						"localhost"
 					],
@@ -151,16 +150,16 @@
 						"folders",
 						"{folder_id}",
 						"transaction",
-						"stop"
+						"{id}stop"
 					]
 				}
 			},
 			"response": []
 		},
 		{
-			"name": "upload multiple files",
+			"name": "transaction complete",
 			"request": {
-				"method": "POST",
+				"method": "PUT",
 				"header": [
 					{
 						"key": "user_id",
@@ -168,18 +167,8 @@
 						"type": "text"
 					}
 				],
-				"body": {
-					"mode": "formdata",
-					"formdata": [
-						{
-							"key": "",
-							"type": "file",
-							"src": "/Users/saur4ig/example.png"
-						}
-					]
-				},
 				"url": {
-					"raw": "localhost:8080/v1/folders/{folder_id}/files/batch/{transaction_id}",
+					"raw": "localhost:8080/v1/folders/5/transaction/1/complete",
 					"host": [
 						"localhost"
 					],
@@ -187,10 +176,10 @@
 					"path": [
 						"v1",
 						"folders",
-						"{folder_id}",
-						"files",
-						"batch",
-						"{transaction_id}"
+						"5",
+						"transaction",
+						"1",
+						"complete"
 					]
 				}
 			},
@@ -209,7 +198,7 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n    \"new_folder_id\": 2\n}",
+					"raw": "{\n    \"new_folder_id\": 3\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -217,7 +206,7 @@
 					}
 				},
 				"url": {
-					"raw": "localhost:8080/v1/folders/{folder_id}/files/{id}/move",
+					"raw": "localhost:8080/v1/folders/1/files/2/move",
 					"host": [
 						"localhost"
 					],
@@ -225,83 +214,10 @@
 					"path": [
 						"v1",
 						"folders",
-						"{folder_id}",
+						"1",
 						"files",
-						"{id}",
+						"2",
 						"move"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "move multiple files",
-			"request": {
-				"method": "PUT",
-				"header": [
-					{
-						"key": "user_id",
-						"value": "1",
-						"type": "text"
-					}
-				],
-				"body": {
-					"mode": "raw",
-					"raw": "{\n    \"file_ids\": [1, 2, 3],\n    \"new_folder_id\": 2\n}",
-					"options": {
-						"raw": {
-							"language": "json"
-						}
-					}
-				},
-				"url": {
-					"raw": "localhost:8080/v1/folders/{folder_id}/files/move",
-					"host": [
-						"localhost"
-					],
-					"port": "8080",
-					"path": [
-						"v1",
-						"folders",
-						"{folder_id}",
-						"files",
-						"move"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "remove multiple files",
-			"request": {
-				"method": "DELETE",
-				"header": [
-					{
-						"key": "user_id",
-						"value": "1",
-						"type": "text"
-					}
-				],
-				"body": {
-					"mode": "raw",
-					"raw": "{\n    \"file_ids\": [\n        1,\n        2,\n        3\n    ]\n}",
-					"options": {
-						"raw": {
-							"language": "json"
-						}
-					}
-				},
-				"url": {
-					"raw": "localhost:8080/v1/folders/{folder_id}/files",
-					"host": [
-						"localhost"
-					],
-					"port": "8080",
-					"path": [
-						"v1",
-						"folders",
-						"{folder_id}",
-						"files"
 					]
 				}
 			},
@@ -319,7 +235,7 @@
 					}
 				],
 				"url": {
-					"raw": "localhost:8080/v1/folders/{folder_id}/files/{id}",
+					"raw": "localhost:8080/v1/folders/3/files/2",
 					"host": [
 						"localhost"
 					],
@@ -327,9 +243,9 @@
 					"path": [
 						"v1",
 						"folders",
-						"{folder_id}",
+						"3",
 						"files",
-						"{id}"
+						"2"
 					]
 				}
 			},
@@ -348,7 +264,7 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n  \"name\": \"app\",\n  \"parent_folder_id\": 1\n}",
+					"raw": "{\n  \"name\": \"test1\",\n  \"parent_folder_id\": 1\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -382,7 +298,7 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "",
+					"raw": "{\n    \"new_folder_id\": 5\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -390,7 +306,7 @@
 					}
 				},
 				"url": {
-					"raw": "localhost:8080/v1/folders/{id}/move",
+					"raw": "localhost:8080/v1/folders/6/move",
 					"host": [
 						"localhost"
 					],
@@ -398,7 +314,7 @@
 					"path": [
 						"v1",
 						"folders",
-						"{id}",
+						"6",
 						"move"
 					]
 				}
@@ -417,7 +333,7 @@
 					}
 				],
 				"url": {
-					"raw": "localhost:8080/v1/folders/{id}",
+					"raw": "localhost:8080/v1/folders/4",
 					"host": [
 						"localhost"
 					],
@@ -425,11 +341,39 @@
 					"path": [
 						"v1",
 						"folders",
-						"{id}"
+						"4"
 					]
 				}
 			},
 			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "folder id",
+			"value": "1"
 		}
 	]
 }

@@ -50,29 +50,15 @@ I've chosen to **store folder sizes** for each folder (including all children fo
 ### 5. Removing a single folder
 - Recursively delete all files in the folder and update sizes in Redis and PostgreSQL.
 
-### 6. Removing multiple files
-- Batch the size updates using a transaction mechanism.
-- Update folder sizes in Redis during deletion.
-- Update folder sizes in PostgreSQL after deletion is complete.
-
-### 7. Removing multiple folders
+### 6. Removing multiple folders
 - Recursively delete all files and subfolders, updating sizes accordingly.
 - Batch updates in Redis and PostgreSQL using a transaction mechanism.
 
-### 8. Moving a single file
+### 7. Moving a single file
 - Update sizes of the source and destination folders in both Redis and PostgreSQL.
 
-### 9. Moving a single folder
+### 8. Moving a single folder
 - Recursively move all files and subfolders, updating sizes accordingly.
-
-### 10. Moving multiple files
-- Batch the size updates using a transaction mechanism.
-- Update sizes of source and destination folders in Redis during the move.
-- Update folder sizes in PostgreSQL after the move is complete.
-
-### 11. Moving multiple folders
-- Recursively move all files and subfolders, updating sizes accordingly.
-- Batch updates in Redis and PostgreSQL using a transaction mechanism.
 
 ## Alternative ideas
 

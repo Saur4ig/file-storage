@@ -12,7 +12,6 @@ DROP TABLE IF EXISTS users;
 
 -- Drop indexes if they exist
 DROP INDEX IF EXISTS idx_user_email;
-DROP INDEX IF EXISTS idx_folder_user;
+DROP INDEX IF EXISTS idx_folder_parent;
 DROP INDEX IF EXISTS idx_file_folder;
-DROP INDEX IF EXISTS idx_file_user;
 DROP INDEX IF EXISTS idx_upload_transaction_status;
